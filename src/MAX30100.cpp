@@ -24,12 +24,13 @@ MAX30100::MAX30100()
 {
 }
 
-bool MAX30100::begin()
+bool MAX30100::begin(unsigned long busSpeed)
 {
     Wire.begin();
-    Wire.setClock(I2C_BUS_SPEED);
+    Wire.setClock(busSpeed);
 
-    if (getPartId() != EXPECTED_PART_ID) {
+    if (getPartId() != EXPECTED_PART_ID)
+    {
         return false;
     }
 
@@ -67,9 +68,12 @@ void MAX30100::setLedsCurrent(LEDCurrent irLedCurrent, LEDCurrent redLedCurrent)
 void MAX30100::setHighresModeEnabled(bool enabled)
 {
     uint8_t previous = readRegister(MAX30100_REG_SPO2_CONFIGURATION);
-    if (enabled) {
+    if (enabled)
+    {
         writeRegister(MAX30100_REG_SPO2_CONFIGURATION, previous | MAX30100_SPC_SPO2_HI_RES_EN);
-    } else {
+    }
+    else
+    {
         writeRegister(MAX30100_REG_SPO2_CONFIGURATION, previous & ~MAX30100_SPC_SPO2_HI_RES_EN);
     }
 }
@@ -81,14 +85,17 @@ void MAX30100::update()
 
 bool MAX30100::getRawValues(uint16_t *ir, uint16_t *red)
 {
-    if (!readoutsBuffer.isEmpty()) {
+    if (!readoutsBuffer.isEmpty())
+    {
         SensorReadout readout = readoutsBuffer.pop();
 
         *ir = readout.ir;
         *red = readout.red;
 
         return true;
-    } else {
+    }
+    else
+    {
         return false;
     }
 }
@@ -126,26 +133,28 @@ void MAX30100::burstRead(uint8_t baseAddress, uint8_t *buffer, uint8_t length)
     Wire.requestFrom((uint8_t)MAX30100_I2C_ADDRESS, length);
 
     uint8_t idx = 0;
-    while (Wire.available()) {
+    while (Wire.available())
+    {
         buffer[idx++] = Wire.read();
     }
 }
 
 void MAX30100::readFifoData()
 {
-    uint8_t buffer[MAX30100_FIFO_DEPTH*4];
+    uint8_t buffer[MAX30100_FIFO_DEPTH * 4];
     uint8_t toRead;
 
-    toRead = (readRegister(MAX30100_REG_FIFO_WRITE_POINTER) - readRegister(MAX30100_REG_FIFO_READ_POINTER)) & (MAX30100_FIFO_DEPTH-1);
+    toRead = (readRegister(MAX30100_REG_FIFO_WRITE_POINTER) - readRegister(MAX30100_REG_FIFO_READ_POINTER)) & (MAX30100_FIFO_DEPTH - 1);
 
-    if (toRead) {
+    if (toRead)
+    {
         burstRead(MAX30100_REG_FIFO_DATA, buffer, 4 * toRead);
 
-        for (uint8_t i=0 ; i < toRead ; ++i) {
+        for (uint8_t i = 0; i < toRead; ++i)
+        {
             // Warning: the values are always left-aligned
-            readoutsBuffer.push({
-                    .ir=(uint16_t)((buffer[i*4] << 8) | buffer[i*4 + 1]),
-                    .red=(uint16_t)((buffer[i*4 + 2] << 8) | buffer[i*4 + 3])});
+            readoutsBuffer.push({.ir = (uint16_t)((buffer[i * 4] << 8) | buffer[i * 4 + 1]),
+                                 .red = (uint16_t)((buffer[i * 4 + 2] << 8) | buffer[i * 4 + 3])});
         }
     }
 }
