@@ -2,23 +2,21 @@
     "name": "MAX30100_milan",
     "keywords": "pulse,oximetry,spo2,max30100,sensor,i2c",
     "description": "Based on MAX30100lib, it's a library for Maxim-IC MAX30100 heart-rate sensor driver and pulse-oximetry components with slightly modifications.",
-    "authors":
-    [
-	{
+    "authors": [
+        {
             "name": "Gabriel Gazola Milan",
-            "email": "gabriel.gazola@poli.ufrj,br",
+            "email": "gabriel.gazola@poli.ufrj.br",
             "url": "https://github.com/gabriel-milan/",
-	    "maintainer": true
+            "maintainer": true
         },
-	{
+        {
             "name": "OXullo Intersecans",
             "email": "x@brainrapers.org",
             "url": "https://github.com/oxullo/",
-	    "maintainer": false
-        },
+            "maintainer": false
+        }
     ],
-    "repository":
-    {
+    "repository": {
         "type": "git",
         "url": "https://github.com/gabriel-milan/Arduino-MAX30100"
     },
